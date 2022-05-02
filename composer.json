@@ -1,5 +1,5 @@
 {
-    "name": "kodingmvc/container",
+    "name": "tuezy/container",
     "autoload": {
         "psr-4": {
             "Tuezy\\": "src/"
