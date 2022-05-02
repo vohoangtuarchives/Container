@@ -1,0 +1,17 @@
+{
+    "name": "kodingmvc/container",
+    "autoload": {
+        "psr-4": {
+            "Tuezy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "HoangTu",
+            "email": "vohoangtu0409@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    }
+}
