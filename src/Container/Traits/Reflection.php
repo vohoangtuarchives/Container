@@ -30,20 +30,33 @@ trait Reflection{
         }
         $constructor = $reflector->getConstructor();
         if(!is_null($constructor)){
-            $dependencies = $constructor->getParameters();
-            $instances = [];
-            if(count($dependencies) > 0){
-                foreach ($dependencies as $dependency){
-                    if(is_null($dependency->getType())){
-                        array_push($instances, $dependency);
-                    }else{
-                        array_push($instances, $this->resolveClass($dependency->getType()->getName()));
-                    }
-                }
-                return $reflector->newInstanceArgs($instances);
+            return $this->resolveClassWithConstructor($constructor, $reflector);
+        }
+        return $this->resolveClassWithoutConstructor($reflector);
+    }
+
+    private function resolveClassWithConstructor($constructor, $reflector){
+        $dependencies = $constructor->getParameters();
+        if(count($dependencies) > 0){
+            $instances = $this->resolveDependenies($dependencies);
+            return $reflector->newInstanceArgs($instances);
+        }
+    }
+
+    private function resolveClassWithoutConstructor($reflector){
+        return $reflector->newInstanceWithoutConstructor();
+    }
+
+    private function resolveDependenies($dependencies){
+        $instances = [];
+        foreach ($dependencies as $dependency){
+            if(is_null($dependency->getType())){
+                array_push($instances, $dependency);
+            }else{
+                array_push($instances, $this->resolveClass($dependency->getType()->getName()));
             }
         }
-        return $reflector->newInstanceWithoutConstructor();
+        return $instances;
     }
 
     private function resolveMethod($abstract, $fn){

@@ -32,6 +32,12 @@ class Container{
         return $abstract; //return raw abstract
     }
 
+    public function instance($abstract, $concrete){
+        if(is_string($abstract))
+            return $this->alias($abstract, $concrete);
+        return false;
+    }
+
     /**
      * @param $abstract
      * @param $fn
