@@ -31,6 +31,12 @@ class Container{
         return $abstract; //return raw abstract
     }
 
+    /**
+     * @param $abstract
+     * @param $concrete
+     * @return false|mixed|string
+     * @throws AlreadyExistsException
+     */
     public function instance($abstract, $concrete){
         if(is_string($abstract))
             return $this->alias($abstract, $concrete);

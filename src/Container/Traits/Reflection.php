@@ -9,6 +9,10 @@ trait Reflection{
      */
     protected $instances = [];
 
+    /**
+     * @param $abstract
+     * @return mixed|string|void
+     */
     private function resolve($abstract)
     {
         try {
@@ -23,6 +27,11 @@ trait Reflection{
         return false;
     }
 
+    /**
+     * @param $abstract
+     * @return mixed|void
+     * @throws \ReflectionException
+     */
     private function resolveClass($abstract){
         $reflector = new \ReflectionClass($abstract);
         if (! $reflector->isInstantiable()) {
@@ -35,6 +44,11 @@ trait Reflection{
         return $this->resolveClassWithoutConstructor($reflector);
     }
 
+    /**
+     * @param $constructor
+     * @param $reflector
+     * @return mixed|void
+     */
     private function resolveClassWithConstructor($constructor, $reflector){
         $dependencies = $constructor->getParameters();
         if(count($dependencies) > 0){
@@ -43,10 +57,19 @@ trait Reflection{
         }
     }
 
+    /**
+     * @param $reflector
+     * @return mixed
+     */
     private function resolveClassWithoutConstructor($reflector){
         return $reflector->newInstanceWithoutConstructor();
     }
 
+    /**
+     * @param $dependencies
+     * @return array
+     * @throws \ReflectionException
+     */
     private function resolveDependenies($dependencies){
         $instances = [];
         foreach ($dependencies as $dependency){
@@ -59,6 +82,12 @@ trait Reflection{
         return $instances;
     }
 
+    /**
+     * @param $abstract
+     * @param $fn
+     * @return mixed
+     * @throws \ReflectionException
+     */
     private function resolveMethod($abstract, $fn){
         $method = new \ReflectionMethod($abstract, $fn);
         $method->setAccessible(true);
