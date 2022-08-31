@@ -65,7 +65,9 @@ trait Reflection{
         $parameters = $method->getParameters();
         $methodPara = [];
         foreach ($parameters as $parameter){
-            $methodPara[] = $this->resolve($parameter->getType()->getName());
+            $methodPara[] = !is_null($parameter->getType())
+                ? $this->resolve($parameter->getType()->getName())
+                : $parameter->getDefaultValue();
         }
         $controller = $this->resolve($abstract);
         return $method->invokeArgs($controller,$methodPara);

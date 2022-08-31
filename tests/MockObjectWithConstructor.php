@@ -5,9 +5,12 @@ class MockObjectWithConstructor implements Mock {
 
     protected $mock;
 
-    public function __construct(MockObjectWithoutConstructor $mockObjectWithoutConstructor)
+    protected $request;
+
+    public function __construct(MockObjectWithoutConstructor $mockObjectWithoutConstructor, $request)
     {
         $this->mock = $mockObjectWithoutConstructor;
+        $this->request = $request;
     }
 
     public function run(){
