@@ -22,8 +22,21 @@ class Container implements ContainerInterface{
 
     public function get(string $id)
     {
-        if($this->has($id))
-            return $this->items[$id];
+        if(isset($this->instances[$id])){
+            return $this->instances[$id];
+        }
+
+        if($this->has($id)){
+            $item = $this->items[$id];
+            if(is_string($item) && class_exists($item)){
+                return $this->resolve($item);
+            }
+            if(is_callable($item)){
+                $object = call_user_func($item, $this);
+                //replace callable closure with object had resolve
+                $this->assign($id, $object);
+            }
+        }
         else
             throw new NotFoundException("{$id} not existed.");
     }
@@ -40,22 +53,22 @@ class Container implements ContainerInterface{
        $this->items[$abstract] = $concrete;
     }
 
-    public function offsetExists(mixed $offset)
+    public function offsetExists($offset)
     {
-       return $this->has($offset);
+        return $this->has($offset);
     }
 
-    public function offsetGet(mixed $offset)
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
-    public function offsetSet(mixed $offset, mixed $value)
+    public function offsetSet($offset, $value)
     {
         $this->items[$offset] = $value;
     }
 
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset($offset)
     {
         unset($this->items[$offset]);
     }
