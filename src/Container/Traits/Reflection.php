@@ -15,16 +15,7 @@ trait Reflection{
      */
     private function resolve($abstract)
     {
-        try {
-            $abstract = $this->alias($abstract);
-            if(isset($this->instances[$abstract])){
-                return $this->instances[$abstract];
-            }
-            return $this->instances[$abstract] = $this->resolveClass($abstract);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-        return false;
+        return $this->instances[$abstract] = $this->resolveClass($abstract);
     }
 
     /**

@@ -5,11 +5,6 @@
             "Tuezy\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
     "authors": [
         {
             "name": "HoangTu",
@@ -24,9 +19,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*"
+        "php": ">=7.2",
+        "psr/container": "^2.0"
     }
 }

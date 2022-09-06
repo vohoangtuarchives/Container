@@ -1,59 +1,68 @@
 <?php
 namespace Tuezy\Container;
 
-use Tuezy\Container\Traits\Reflection;
+use Tuezy\Container\Exceptions\NotFoundException;
 use Tuezy\Container\Exceptions\AlreadyExistsException;
-use Tuezy\Container\Traits\Singleton;
+use Tuezy\Container\Traits\Reflection;
 
-class Container{
-    use Singleton, Reflection;
+class Container implements ContainerInterface{
+    use Reflection;
 
-    /** store class for later resolve
-     * @var array
-     */
-    protected $alias = [];
+    protected $items = [];
 
-    /**
-     * @param $abstract
-     * @param $concrete
-     * @return mixed|string
-     * @throws AlreadyExistsException
-     */
-    public function alias($abstract, $concrete = null){
-        if(isset($this->alias[$abstract]) && !is_null($concrete))
-            throw new AlreadyExistsException;
-        if(is_null($concrete) && isset($this->alias[$abstract])){
-            return $this->alias[$abstract]; //bind for later
+    protected static $instance;
+
+    public static function getInstance() : Container
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new static;
         }
-        if($concrete){
-            $this->alias[$abstract] = $concrete;
-        }
-        return $abstract; //return raw abstract
+        return static::$instance;
     }
 
-    /**
-     * @param $abstract
-     * @param $concrete
-     * @return false|mixed|string
-     * @throws AlreadyExistsException
-     */
-    public function instance($abstract, $concrete){
-        if(is_string($abstract))
-            return $this->alias($abstract, $concrete);
-        return false;
+    public function get(string $id)
+    {
+        if($this->has($id))
+            return $this->items[$id];
+        else
+            throw new NotFoundException("{$id} not existed.");
     }
 
-    /**
-     * @param $abstract
-     * @param $fn
-     * @return mixed|object|string|null
-     */
-    public function make($abstract, $fn = null){
-        if(is_null($fn)){
-            return $this->resolve($abstract);
-        }else{
-            return $this->resolveMethod($abstract, $fn);
-        }
+    public function has(string $id): bool
+    {
+        return isset($this->items[$id]);
     }
 
+    public function assign(string $abstract, $concrete = null)
+    {
+        if($this->has($abstract))
+            throw new AlreadyExistsException("{$abstract} defined!");
+       $this->items[$abstract] = $concrete;
+    }
+
+    public function offsetExists(mixed $offset)
+    {
+       return $this->has($offset);
+    }
+
+    public function offsetGet(mixed $offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet(mixed $offset, mixed $value)
+    {
+        $this->items[$offset] = $value;
+    }
+
+    public function offsetUnset(mixed $offset)
+    {
+        unset($this->items[$offset]);
+    }
+
+    public function make($abstract)
+    {
+        $abstract = $this->get($abstract);
+        return $this->resolve($abstract);
+    }
 }

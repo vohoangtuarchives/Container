@@ -1,20 +1,15 @@
 <?php
 namespace Tuezy\Container;
 
-interface ContainerInterface{
+use ArrayAccess;
+use Psr\Container\ContainerInterface as CI;
+interface ContainerInterface extends CI, ArrayAccess{
     /**
      * @param $abstract
      * @param null $concrete
      * @return mixed
      */
-    public function alias($abstract, $concrete = null);
-
-    /**
-     * @param $abstract
-     * @param $concrete
-     * @return mixed
-     */
-    public function instance($abstract, $concrete);
+    public function assign(string $abstract, $concrete = null);
 
     /**
      * @param $abstract
