@@ -22,11 +22,11 @@ class Container{
     public function alias($abstract, $concrete = null){
         if(isset($this->alias[$abstract]) && !is_null($concrete))
             throw new AlreadyExistsException;
-        if(is_string($concrete)){
-            $this->alias[$abstract] = $concrete;
-        }
         if(is_null($concrete) && isset($this->alias[$abstract])){
             return $this->alias[$abstract]; //bind for later
+        }
+        if($concrete){
+            $this->alias[$abstract] = $concrete;
         }
         return $abstract; //return raw abstract
     }
