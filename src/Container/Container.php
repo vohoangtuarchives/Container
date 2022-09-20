@@ -10,6 +10,8 @@ class Container implements ContainerInterface{
 
     protected $items = [];
 
+    protected $alias = [];
+
     protected static $instance;
 
     public static function getInstance() : Container
@@ -77,5 +79,21 @@ class Container implements ContainerInterface{
     {
         $abstract = $this->get($abstract);
         return $this->resolve($abstract);
+    }
+
+    public function alias($abstract, $concrete = null){
+        if(!is_string($abstract)) throw new \Exception('$abstract must be string in alias function');
+        if($this->aliased($abstract)){
+            if(is_null($concrete)) return $this->alias[$abstract];
+            else throw new \Exception('$abstract existed');
+        }else{
+            if(is_null($concrete)) throw new \Exception('you forget to provide $concerete');
+            $this->alias[$abstract] = $concrete;
+        }
+        return null;
+    }
+
+    public function aliased($abstract){
+        return isset($this->alias[$abstract]);
     }
 }
