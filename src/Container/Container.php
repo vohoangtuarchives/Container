@@ -12,6 +12,8 @@ class Container implements ContainerInterface{
 
     protected $alias = [];
 
+    protected $shared = [];
+
     protected static $instance;
 
     public static function getInstance() : Container
@@ -36,8 +38,10 @@ class Container implements ContainerInterface{
             if(is_callable($item)){
                 $object = call_user_func($item, $this);
                 //replace callable closure with object had resolve
-                $this->assign($id, $object);
+                return $this->assign($id, $object);
             }
+
+            return $item;
         }
         else
             throw new NotFoundException("{$id} not existed.");
@@ -48,11 +52,18 @@ class Container implements ContainerInterface{
         return isset($this->items[$id]);
     }
 
-    public function assign(string $abstract, $concrete = null)
+    public function assign(string $abstract, $concrete = null, $shared = false)
     {
-        if($this->has($abstract))
+        if($shared == false && $this->has($abstract))
             throw new AlreadyExistsException("{$abstract} defined!");
-       $this->items[$abstract] = $concrete;
+        if($shared == true){
+            $this->shared[$abstract] = true;
+            $this->items[$abstract][] = $concrete;
+            $this->items[$abstract] = array_unique($this->items[$abstract]);
+        }else{
+            $this->items[$abstract] = $concrete;
+        }
+
     }
 
     public function offsetExists($offset)
