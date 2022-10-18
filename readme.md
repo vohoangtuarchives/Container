@@ -4,3 +4,5 @@
   - Require type of abstract: string
   - Concerete can be string | object | null
   - Return alias if concrete is null
+# History
+- 0.0.6: implements shared alias
