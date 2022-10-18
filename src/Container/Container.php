@@ -16,6 +16,8 @@ class Container implements ContainerInterface{
 
     protected static $instance;
 
+    public const SHARED = true;
+
     public static function getInstance() : Container
     {
         if (is_null(static::$instance)) {
